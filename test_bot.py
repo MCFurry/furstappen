@@ -1,5 +1,5 @@
-from .bot import SimpleBot
+from .bot import FurStappen
 
 
 def test_init():
-    SimpleBot(track=None)
+    FurStappen(track=None)
