@@ -20,11 +20,11 @@ class FurStappen(Bot):
     def __init__(self, track):
         super().__init__(track)
 
-        self.lookahead_distance = 2.0
-        self.steering_gain = 1.2
-        self.throttle_gain = 365.0
-        self.max_velocity = 500.0
-        self.min_velocity = 140.0
+        self.lookahead_distance = 1.537
+        self.steering_gain = 4.4130
+        self.throttle_gain = 89.867
+        self.max_velocity = 375.0
+        self.min_velocity = 160.0
 
         self.max_position_idx = len(self.track.lines) - 1
     
