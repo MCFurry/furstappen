@@ -1,4 +1,4 @@
 from .bot import FurStappen
-from .ai_bot import FurStAIppen
+from .bot2 import Schummi
 
-__all__ = ["FurStappen", "FurStAIppen"]
+__all__ = ["FurStappen", "Schummi"]

@@ -1,6 +1,6 @@
 from .bot import FurStappen
-from .ai_bot import FurStAIppen
+from .bot2 import Schummi
 
 def test_init():
     FurStappen(track=None)
-    FurStAIppen(track=None)
+    Schummi(track=None)
