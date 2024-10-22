@@ -20,6 +20,7 @@ STEERING_GAIN = 45.0
 MAX_VELOCITY = 348.0
 MIN_VELOCTIY = 94.5
 ACCELERATION = 124.4
+MULTIPLIER = 3
 
 DEBUG = False
 
@@ -129,7 +130,7 @@ class Schummi(Bot):
         self.target_idx = 0
 
         # Calculate the optimized racing line
-        self.smooth_track = optimize_racing_line(self.track.lines, 3*len(self.track.lines), smoothing_factor=123)
+        self.smooth_track = optimize_racing_line(self.track.lines, MULTIPLIER*len(self.track.lines), smoothing_factor=123)
 
         # Calculate curvatures for the optimized racing line
         self.curvatures = calculate_curvature(self.smooth_track)
@@ -194,9 +195,14 @@ class Schummi(Bot):
 
     def compute_commands(self, next_waypoint: int, position: Transform, velocity: Vector2) -> Tuple:
         self.find_target(position)
-        self.car_position = position
+        # Recovery behavior in case we miss next_waypoint
+        game_target = position.inverse() * self.track.lines[next_waypoint]
+        if game_target[0] < 0:
+            target = self.track.lines[next_waypoint]
+        else:
+            target = self.smooth_track[self.target_idx]
 
-        target = self.smooth_track[self.target_idx]
+        self.car_position = position
 
         # Transform target to the car's local coordinate frame
         target_local = position.inverse() * target
