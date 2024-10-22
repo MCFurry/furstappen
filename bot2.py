@@ -79,7 +79,7 @@ def get_speed_setpoints(track, curvatures, min_velocity, max_velocity, accelerat
     #         curvature_factor = 1 - (curvature / max_curvature)
     #         speed_setpoints.append(min_velocity + (max_velocity - min_velocity) * curvature_factor)
     for curvature in curvatures:
-        if curvature <= 0.1:
+        if curvature <= 0.2:
             speed_setpoints.append(max_velocity)
         else:
             curvature_factor = 1 - (curvature / max_curvature)
