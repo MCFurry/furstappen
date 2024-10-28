@@ -8,6 +8,7 @@ from ...linear_math import Transform
 
 import math
 import numpy as np
+import os
 from scipy import interpolate
 
 pygame.font.init()
@@ -137,7 +138,30 @@ class Schummi(Bot):
         self.max_curvature = max(self.curvatures)
         self.speed_setpoints = get_speed_setpoints(self.smooth_track, self.curvatures, MIN_VELOCTIY, MAX_VELOCITY, ACCELERATION, ACCELERATION)
 
+        self.banana = pygame.image.load(
+                os.path.dirname(__file__) + '/Banana.png')
+        self.iter = 0
+        self.draw_banana = False
+
     def draw(self, map_scaled, zoom):
+        if self.iter % 900 == 0:
+            self.draw_banana = True
+            self.banana_pos = self.car_position.p
+            self.banana_rot = self.car_position.M.angle + 45
+        elif self.iter % 1400 == 0:
+            self.draw_banana = False
+            self.iter = 0
+        if self.draw_banana:
+            if self.iter % 900 < 35:
+                banana_zoom = max(0.1 + (self.iter % 900)*0.0029, 0.1) * zoom
+            else:
+                banana_zoom = max(0.2 - (self.iter % 935)*0.0029, 0.1) * zoom
+            _image = pygame.transform.rotozoom(
+                self.banana, -math.degrees(self.banana_rot) - 45, banana_zoom)
+            _rect = _image.get_rect(
+                center=self.banana_pos * zoom)
+            map_scaled.blit(_image, _rect)
+
         if not DEBUG:
             return
         # Plot the smooth track
@@ -226,5 +250,5 @@ class Schummi(Bot):
             throttle = 1  # Accelerate
         else:
             throttle = -1  # Decelerate
-
+        self.iter += 1
         return throttle, steer
