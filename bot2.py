@@ -24,6 +24,7 @@ ACCELERATION = 124.4
 MULTIPLIER = 3
 
 DEBUG = False
+GIMMICKS = True
 
 def calculate_curvature(points):
     curvatures = []
@@ -138,29 +139,45 @@ class Schummi(Bot):
         self.max_curvature = max(self.curvatures)
         self.speed_setpoints = get_speed_setpoints(self.smooth_track, self.curvatures, MIN_VELOCTIY, MAX_VELOCITY, ACCELERATION, ACCELERATION)
 
+        self.iter = 0
         self.banana = pygame.image.load(
                 os.path.dirname(__file__) + '/Banana.png')
-        self.iter = 0
         self.draw_banana = False
+        self.oil = pygame.image.load(
+                os.path.dirname(__file__) + '/oil_puddle.png')
+        self.draw_oil_iter = None
 
     def draw(self, map_scaled, zoom):
-        if self.iter % 900 == 0:
-            self.draw_banana = True
-            self.banana_pos = self.car_position.p
-            self.banana_rot = self.car_position.M.angle + 45
-        elif self.iter % 1400 == 0:
-            self.draw_banana = False
-            self.iter = 0
-        if self.draw_banana:
-            if self.iter % 900 < 35:
-                banana_zoom = max(0.1 + (self.iter % 900)*0.0029, 0.1) * zoom
-            else:
-                banana_zoom = max(0.2 - (self.iter % 935)*0.0029, 0.1) * zoom
-            _image = pygame.transform.rotozoom(
-                self.banana, -math.degrees(self.banana_rot) - 45, banana_zoom)
-            _rect = _image.get_rect(
-                center=self.banana_pos * zoom)
-            map_scaled.blit(_image, _rect)
+        if GIMMICKS:
+            if self.iter % 900 == 0:
+                self.draw_banana = True
+                self.banana_pos = self.car_position.p
+                self.banana_rot = self.car_position.M.angle + 45
+            elif self.iter % 1400 == 0:
+                self.draw_banana = False
+                self.iter = 0
+            if self.draw_banana:
+                if self.iter % 900 < 35:
+                    banana_zoom = max(0.1 + (self.iter % 900)*0.0029, 0.1) * zoom
+                else:
+                    banana_zoom = max(0.15 - (self.iter % 935)*0.0029, 0.1) * zoom
+                _image = pygame.transform.rotozoom(
+                    self.banana, -math.degrees(self.banana_rot) - 45, banana_zoom)
+                _rect = _image.get_rect(
+                    center=self.banana_pos * zoom)
+                map_scaled.blit(_image, _rect)
+
+            if self.draw_oil_iter is not None:
+                iter_diff = abs(self.iter - self.draw_oil_iter)
+                if iter_diff > 100:
+                    self.draw_oil_iter = None
+                oil_zoom = 0.2 * zoom
+                _image = pygame.transform.rotozoom(
+                    self.oil, -math.degrees(self.oil_rot), oil_zoom)
+                _image.set_alpha(255-iter_diff*2)
+                _rect = _image.get_rect(
+                    center=self.oil_pos * zoom)
+                map_scaled.blit(_image, _rect)
 
         if not DEBUG:
             return
@@ -223,6 +240,10 @@ class Schummi(Bot):
         game_target = position.inverse() * self.track.lines[next_waypoint]
         if game_target[0] < 0:
             target = self.track.lines[next_waypoint]
+            if self.draw_oil_iter is None:
+                self.oil_pos = self.track.lines[next_waypoint]
+                self.oil_rot = position.M.angle
+            self.draw_oil_iter = self.iter
         else:
             target = self.smooth_track[self.target_idx]
 
