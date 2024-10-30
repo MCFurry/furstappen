@@ -21,6 +21,8 @@ STEERING_GAIN = 45.0
 MAX_VELOCITY = 348.0
 MIN_VELOCTIY = 94.5
 ACCELERATION = 124.4
+
+# Constants
 MULTIPLIER = 3
 
 DEBUG = False
@@ -52,12 +54,8 @@ def optimize_racing_line(points, num_interpolated_points, smoothing_factor):
     # Convert Vector2 objects to numpy array
     points_array = np.array([(p.x, p.y) for p in points])
 
-    # Create a parameter array for interpolation
-    t = np.linspace(0, 1, len(points_array), endpoint=False)
-
     # Duplicate the first point at the end to ensure closure
     points_array = np.vstack((points_array, points_array[0]))
-    t = np.append(t, 1)
 
     # Create periodic spline with smoothing
     tck, _ = interpolate.splprep([points_array[:, 0], points_array[:, 1]], s=smoothing_factor, per=1)
@@ -73,13 +71,6 @@ def get_speed_setpoints(track, curvatures, min_velocity, max_velocity, accelerat
     max_curvature = max(curvatures)
     speed_setpoints = []
 
-    # First pass: calculate initial speed setpoints based on curvature
-    # for curvature in curvatures:
-    #     if curvature <= 0.1:
-    #         speed_setpoints.append(max_velocity)
-    #     else:
-    #         curvature_factor = 1 - (curvature / max_curvature)
-    #         speed_setpoints.append(min_velocity + (max_velocity - min_velocity) * curvature_factor)
     for curvature in curvatures:
         if curvature <= 0.2:
             speed_setpoints.append(max_velocity)
@@ -136,7 +127,6 @@ class Schummi(Bot):
 
         # Calculate curvatures for the optimized racing line
         self.curvatures = calculate_curvature(self.smooth_track)
-        self.max_curvature = max(self.curvatures)
         self.speed_setpoints = get_speed_setpoints(self.smooth_track, self.curvatures, MIN_VELOCTIY, MAX_VELOCITY, ACCELERATION, ACCELERATION)
 
         self.iter = 0
