@@ -14,12 +14,20 @@ from scipy import interpolate
 pygame.font.init()
 font = pygame.font.Font(None, 24)  # None uses default font, 24 is the font size
 
-# Tuuuuuunings
-LOOKAHEAD_DISTANCE = 11.64
-PACMAN_DISTANCE = 70.18
-STEERING_GAIN = 45.0
-MAX_VELOCITY = 348.0
-MIN_VELOCTIY = 94.5
+# Tuuuuuunings (158.16)
+# LOOKAHEAD_DISTANCE = 11.64
+# PACMAN_DISTANCE = 70.18
+# STEERING_GAIN = 45.0
+# MAX_VELOCITY = 348.0
+# MIN_VELOCTIY = 94.5
+# ACCELERATION = 124.4
+
+# 167.6
+LOOKAHEAD_DISTANCE = 17.37
+PACMAN_DISTANCE = 69.32
+STEERING_GAIN = 40.54
+MAX_VELOCITY = 305.72
+MIN_VELOCTIY = 97.32
 ACCELERATION = 124.4
 
 # Constants
