@@ -15,19 +15,11 @@ pygame.font.init()
 font = pygame.font.Font(None, 24)  # None uses default font, 24 is the font size
 
 # Tuuuuuunings (158.16)
-# LOOKAHEAD_DISTANCE = 11.64
-# PACMAN_DISTANCE = 70.18
-# STEERING_GAIN = 45.0
-# MAX_VELOCITY = 348.0
-# MIN_VELOCTIY = 94.5
-# ACCELERATION = 124.4
-
-# 167.6
-LOOKAHEAD_DISTANCE = 17.37
-PACMAN_DISTANCE = 69.32
-STEERING_GAIN = 40.54
-MAX_VELOCITY = 305.72
-MIN_VELOCTIY = 97.32
+LOOKAHEAD_DISTANCE = 11.64
+PACMAN_DISTANCE = 70.18
+STEERING_GAIN = 45.0
+MAX_VELOCITY = 348.0
+MIN_VELOCTIY = 94.5
 ACCELERATION = 124.4
 
 # Constants
@@ -61,6 +53,8 @@ def calculate_curvature(points):
 def optimize_racing_line(points, num_interpolated_points, smoothing_factor):
     # Convert Vector2 objects to numpy array
     points_array = np.array([(p.x, p.y) for p in points])
+    # Swap points to have same track as before
+    points_array = np.vstack((points_array[-1], points_array[0:-1]))
 
     # Duplicate the first point at the end to ensure closure
     points_array = np.vstack((points_array, points_array[0]))
