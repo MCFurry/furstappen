@@ -14,21 +14,14 @@ from scipy import interpolate
 pygame.font.init()
 font = pygame.font.Font(None, 24)  # None uses default font, 24 is the font size
 
-# Tuuuuuunings (158.16)
-# LOOKAHEAD_DISTANCE = 11.64
-# PACMAN_DISTANCE = 70.18
-# STEERING_GAIN = 45.0
-# MAX_VELOCITY = 348.0
-# MIN_VELOCTIY = 94.5
-# ACCELERATION = 124.4
-
-# +Zandvoort 239.66
-LOOKAHEAD_DISTANCE = 16.5
-PACMAN_DISTANCE = 55.59
-STEERING_GAIN = 37.41
-MAX_VELOCITY = 300.32
-MIN_VELOCTIY = 107.54
-ACCELERATION = 128.92
+# Tuuuuuunings (236.56)
+LOOKAHEAD_DISTANCE = 12.161546137318174
+PACMAN_DISTANCE = 57.73443683094321
+STEERING_GAIN = 43.12390449304172
+MAX_VELOCITY = 336.5507567714478
+MIN_VELOCTIY = 101.11322414061979
+ACCELERATION = 129.41140584124045
+MAX_SPEED_CURVATURE = 0.12255744407768532
 
 # Constants
 MULTIPLIER = 3
@@ -82,7 +75,7 @@ def get_speed_setpoints(track, curvatures, min_velocity, max_velocity, accelerat
     speed_setpoints = []
 
     for curvature in curvatures:
-        if curvature <= 0.23:
+        if curvature <= MAX_SPEED_CURVATURE:
             speed_setpoints.append(max_velocity)
         else:
             curvature_factor = 1 - (curvature / max_curvature)
