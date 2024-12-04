@@ -14,14 +14,14 @@ from scipy import interpolate
 pygame.font.init()
 font = pygame.font.Font(None, 24)  # None uses default font, 24 is the font size
 
-# Tuuuuuunings (236.56)
-LOOKAHEAD_DISTANCE = 12.161546137318174
-PACMAN_DISTANCE = 57.73443683094321
-STEERING_GAIN = 43.12390449304172
-MAX_VELOCITY = 336.5507567714478
-MIN_VELOCTIY = 101.11322414061979
-ACCELERATION = 129.41140584124045
-MAX_SPEED_CURVATURE = 0.12255744407768532
+# Fastest time: 235.81666666666666 with tuning:
+LOOKAHEAD_DISTANCE = 13.995995718245306
+PACMAN_DISTANCE = 2.290481869379565
+STEERING_GAIN = 36.72179101748112
+MAX_VELOCITY = 331.833423012679
+MIN_VELOCTIY = 108.05712307811402
+ACCELERATION = 123.17354102072001
+MAX_SPEED_CURVATURE = 0.1003230954720953
 
 # Constants
 MULTIPLIER = 3
@@ -222,7 +222,7 @@ class Schummi(Bot):
 
     def find_target(self, position):
         target = self.smooth_track[self.target_idx]
-        if math.sqrt((position.p.x - target.x)**2 + (position.p.y - target.y)**2) < PACMAN_DISTANCE:
+        if math.sqrt((position.p.x - target.x)**2 + (position.p.y - target.y)**2) < (PACMAN_DISTANCE*self.track.track_width):
             self.target_idx += 1
             if self.target_idx >= len(self.smooth_track):
                 self.target_idx = 0
