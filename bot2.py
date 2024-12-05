@@ -14,14 +14,14 @@ from scipy import interpolate
 pygame.font.init()
 font = pygame.font.Font(None, 24)  # None uses default font, 24 is the font size
 
-# Fastest time: 235.81666666666666 with tuning:
-LOOKAHEAD_DISTANCE = 13.995995718245306
-PACMAN_DISTANCE = 2.290481869379565
-STEERING_GAIN = 36.72179101748112
-MAX_VELOCITY = 331.833423012679
-MIN_VELOCTIY = 108.05712307811402
-ACCELERATION = 123.17354102072001
-MAX_SPEED_CURVATURE = 0.1003230954720953
+# Fastest time: 235.61666666666665 with tuning:
+LOOKAHEAD_DISTANCE = 322.0289884801654
+PACMAN_DISTANCE = 2.335308882625077
+STEERING_GAIN = 2.558783718759612
+MAX_VELOCITY = 334.08290145990225
+MIN_VELOCTIY = 105.57788178147484
+ACCELERATION = 125.74764919688818
+MAX_SPEED_CURVATURE = 0.00017256004984926923
 
 # Constants
 MULTIPLIER = 3
@@ -125,6 +125,11 @@ class Schummi(Bot):
         super().__init__(track)
         self.target_idx = 0
 
+        # Scale some parameters depending on the track
+        self.lookahead_dist_scaled = LOOKAHEAD_DISTANCE / track.track_width
+        self.pacman_dist_scaled = PACMAN_DISTANCE * track.track_width
+        self.steering_gain_scaled = STEERING_GAIN * track.track_width
+
         # Calculate the optimized racing line
         self.smooth_track = optimize_racing_line(self.track.lines, MULTIPLIER*len(self.track.lines), smoothing_factor=123)
 
@@ -222,7 +227,7 @@ class Schummi(Bot):
 
     def find_target(self, position):
         target = self.smooth_track[self.target_idx]
-        if math.sqrt((position.p.x - target.x)**2 + (position.p.y - target.y)**2) < (PACMAN_DISTANCE*self.track.track_width):
+        if math.sqrt((position.p.x - target.x)**2 + (position.p.y - target.y)**2) < self.pacman_dist_scaled:
             self.target_idx += 1
             if self.target_idx >= len(self.smooth_track):
                 self.target_idx = 0
@@ -249,11 +254,11 @@ class Schummi(Bot):
         target_distance = math.sqrt(target_local.x**2 + target_local.y**2)
 
         if target_distance > 0:
-            curvature = (2 * target_local.y) / (LOOKAHEAD_DISTANCE**2)
+            curvature = (2 * target_local.y) / (self.lookahead_dist_scaled**2)
         else:
             curvature = 0
 
-        steer = curvature * STEERING_GAIN
+        steer = curvature * self.steering_gain_scaled
         # Clamping steer value between -1 and 1
         steer = max(-1, min(1, steer))
 
